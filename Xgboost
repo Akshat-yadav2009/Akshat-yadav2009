@@ -1,0 +1,102 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyMr8sZwFbnZA9GrCGphfqfv",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/Akshat-yadav2009/Akshat-yadav2009/blob/main/Xgboost\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "##Implemantation of xgboost in gradeint boosting\n"
+      ],
+      "metadata": {
+        "id": "Aqn-p-qBU3bd"
+      }
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 6,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "BAFwmcY580rd",
+        "outputId": "3822b0b1-c783-43be-ce2a-9a5589d0ebe9"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "/usr/local/lib/python3.13/dist-packages/xgboost/callback.py:385: UserWarning: [21:07:55] WARNING: /__w/xgboost/xgboost/src/learner.cc:794: \n",
+            "Parameters: { \"use_label_encoder\" } are not used.\n",
+            "\n",
+            "  self.starting_round = model.num_boosted_rounds()\n"
+          ]
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Accuracy: 0.9561\n"
+          ]
+        }
+      ],
+      "source": [
+        "import xgboost as xgb\n",
+        "from sklearn.model_selection import train_test_split\n",
+        "from sklearn.metrics import accuracy_score\n",
+        "from sklearn.datasets import load_breast_cancer\n",
+        "\n",
+        "# Load data\n",
+        "data = load_breast_cancer()\n",
+        "X_train, X_test, y_train, y_test = train_test_split(\n",
+        "    data.data, data.target, test_size=0.2, random_state=42\n",
+        ")\n",
+        "\n",
+        "# Train\n",
+        "model = xgb.XGBClassifier(\n",
+        "    n_estimators=300,\n",
+        "    max_depth=10,\n",
+        "    learning_rate=0.05,\n",
+        "    use_label_encoder=False,\n",
+        "    eval_metric='logloss',\n",
+        "    early_stopping_rounds=30\n",
+        ")\n",
+        "\n",
+        "model.fit(\n",
+        "    X_train, y_train,\n",
+        "    eval_set=[(X_test, y_test)],\n",
+        "    verbose=False\n",
+        ")\n",
+        "\n",
+        "# Predict\n",
+        "preds = model.predict(X_test)\n",
+        "print(f\"Accuracy: {accuracy_score(y_test, preds):.4f}\")\n",
+        "# Typically ~97% on this dataset"
+      ]
+    }
+  ]
+}
